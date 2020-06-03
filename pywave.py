@@ -199,23 +199,24 @@ def randomize(im):
 class Application(tk.Frame):
     def __init__(self, filename, master=None):
         super().__init__(master)
-        print(filename)
+        #print(filename)
         self.master = master
         self.img = Image.open(filename)
         if(self.img.size > (MIN_WIDTH, MIN_HEIGHT)):
             self.resize()            
         self.pimg = ImageTk.PhotoImage(self.img)
         self.last = self.img
-        self.pack()
+        self.grid()
         self.create_widgets()
         
     def create_widgets(self):
         self.quit = tk.Button(self, text="QUIT", fg="red",
                               command=self.master.destroy)                      
-        self.undoB = tk.Button(self, text = "UNDO", fg = "yellow",
+        self.undoB = tk.Button(self, text = "UNDO", fg = "blue",
                               command=self.undo)
-        self.undoB.pack(side="bottom")
-        self.quit.pack(side="bottom")
+        
+        self.undoB.grid(row = 5, column = 0, columnspan = 2)
+        self.quit.grid(row = 5, column = 2)
 
         self.splitB = tk.Button(self, text="SPLIT", command=self.split)
         self.unsplitB = tk.Button(self, text="MERGE", command=self.unsplit)
@@ -226,22 +227,21 @@ class Application(tk.Frame):
         self.stagB = tk.Button(self, text="STAG", command=self.stag)
         self.stogB = tk.Button(self, text="STOG", command=self.stog)
         self.colorB = tk.Button(self, text="COLOR", command=self.color)
-        self.randB = tk.Button(self, text="RAND", command=self.rand)
+        self.randB = tk.Button(self, text="RANDOM", command=self.rand)
         
-        #TODO: switch to grid instead of pack 
-        self.splitB.pack(side="left")
-        self.unsplitB.pack(side="left")
-        self.splotB.pack(side="left")
-        self.unsplotB.pack(side="left")
+        self.splitB.grid(row = 0, column = 0)
+        self.unsplitB.grid(row = 0, column = 1)
+        self.splotB.grid(row = 1, column = 0)
+        self.unsplotB.grid(row = 1, column = 1)
 
-        self.waveB.pack(side="left")
-        self.stagB.pack(side="left")
-        self.stogB.pack(side="left")
-        self.colorB.pack(side="left")
-        self.randB.pack(side="left")
+        self.stagB.grid(row = 2, column = 0)
+        self.stogB.grid(row = 2, column = 1)
+        self.waveB.grid(row = 3, column = 0)
+        self.colorB.grid(row = 3, column = 1)
+        self.randB.grid(row = 4, column = 0, columnspan=2)
 
         self.panel = tk.Label(self, image = self.pimg)
-        self.panel.pack(side="top")
+        self.panel.grid(row = 0, column = 2, rowspan = 5)
         
     def split(self):
         self.last = self.img
@@ -305,7 +305,7 @@ def main(argv):
     if len(argv) == 0:
         img = Image.new("RGB", (500, 500), (255, 255, 255))
         d = ImageDraw.Draw(img)
-        d.text((200,230), "No image file provided", fill=(0, 0, 0,255))
+        d.text((200,230), "No image file provided\nUse arguments python ", fill=(0, 0, 0,255))
         img.save("default.png")
         
         argv.append("default.png")
@@ -314,6 +314,5 @@ def main(argv):
     app = Application(argv[0], master=root)
     app.mainloop()
 
-#TODO: add commandline arguments
 if __name__ == "__main__":
    main(sys.argv[1:])
