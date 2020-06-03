@@ -316,7 +316,9 @@ class Application(tk.Frame):
         self.updateImage()
     
     def saveFile(self):
-        fileName = tk.filedialog.asksaveasfilename()
+        files = [('PNG', '*.png'),  
+             ('JPEG', '*.jpg')] 
+        fileName = tk.filedialog.asksaveasfilename(filetypes = files, defaultextension = files)
         self.img.save(fileName)
 
 
