@@ -6,7 +6,8 @@ import tkinter as tk
 #import time
 import math
 import random
-from PIL import ImageTk, Image
+import sys
+from PIL import ImageTk, Image, ImageDraw, ImageFont
 
 #TODO: add slider for values
 MIN_WIDTH = 700
@@ -99,7 +100,7 @@ def wave(im):
 
 #Cuts a section of the image into slices, offsets each slice by a random amount
 def stagger(im):
-    tm = im
+    tm = im.copy()
     mid = im.size[0]//2 + S_OFFSET
     for i in range(mid - S_WIDTH // 2, mid + S_WIDTH // 2, S_GAP):
         offset = random.randrange(-S_INTENSITY, S_INTENSITY, S_RANDSTEP)
@@ -115,11 +116,12 @@ def stagger(im):
         #print((i, im.size[1] - offset , i+1, im.size[1]))
         tm.paste(region1, (i, im.size[1] - offset , i+S_GAP, im.size[1]))
         tm.paste(region2, (i, 0, i + S_GAP, im.size[1] - offset) )
+    
     return tm
 
 #Same as above, cuts horizontal slices however
 def stogger(im):
-    tm = im
+    tm = im.copy()
     mid = im.size[1]//2 + S_OFFSET
     for i in range(mid - S_WIDTH // 2, mid + S_WIDTH // 2, S_GAP):
         offset = random.randrange(-S_INTENSITY, S_INTENSITY, S_RANDSTEP)
@@ -195,10 +197,11 @@ def randomize(im):
     return tm
 
 class Application(tk.Frame):
-    def __init__(self, master=None):
+    def __init__(self, filename, master=None):
         super().__init__(master)
+        print(filename)
         self.master = master
-        self.img = Image.open("maxresdefault.jpg")
+        self.img = Image.open(filename)
         if(self.img.size > (MIN_WIDTH, MIN_HEIGHT)):
             self.resize()            
         self.pimg = ImageTk.PhotoImage(self.img)
@@ -297,10 +300,20 @@ class Application(tk.Frame):
             ratio = MIN_HEIGHT / self.img.size[1]
             self.img = self.img.resize(tuple(int(ratio*x) for x in self.img.size))
             #print(self.img.size)
+
+def main(argv):
+    if len(argv) == 0:
+        img = Image.new("RGB", (500, 500), (255, 255, 255))
+        d = ImageDraw.Draw(img)
+        d.text((200,230), "No image file provided", fill=(0, 0, 0,255))
+        img.save("default.png")
         
-print("Using Pillow", Image.__version__)
-root = tk.Tk()
-app = Application(master=root)
-app.mainloop()
+        argv.append("default.png")
+    print("Using Pillow", Image.__version__)
+    root = tk.Tk()
+    app = Application(argv[0], master=root)
+    app.mainloop()
 
 #TODO: add commandline arguments
+if __name__ == "__main__":
+   main(sys.argv[1:])
