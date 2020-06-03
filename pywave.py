@@ -3,12 +3,13 @@
 
 
 import tkinter as tk
+import tkinter.filedialog
 #import time
 import math
 import random
 import sys
 from PIL import ImageTk, Image, ImageDraw, ImageFont
-
+#TODO: add option to load new image
 #TODO: add slider for values
 MIN_WIDTH = 700
 MIN_HEIGHT = 700
@@ -214,9 +215,13 @@ class Application(tk.Frame):
                               command=self.master.destroy)                      
         self.undoB = tk.Button(self, text = "UNDO", fg = "blue",
                               command=self.undo)
+        self.open = tk.Button(self, text = "OPEN", command = self.openFile)
+        self.save = tk.Button(self, text = "SAVE", command = self.saveFile)
         
         self.undoB.grid(row = 5, column = 0, columnspan = 2)
-        self.quit.grid(row = 5, column = 2)
+        self.quit.grid(row = 5, column = 4)
+        self.save.grid(row = 5, column = 3)
+        self.open.grid(row = 5, column = 2)
 
         self.splitB = tk.Button(self, text="SPLIT", command=self.split)
         self.unsplitB = tk.Button(self, text="MERGE", command=self.unsplit)
@@ -241,7 +246,7 @@ class Application(tk.Frame):
         self.randB.grid(row = 4, column = 0, columnspan=2)
 
         self.panel = tk.Label(self, image = self.pimg)
-        self.panel.grid(row = 0, column = 2, rowspan = 5)
+        self.panel.grid(row = 0, column = 2, rowspan = 5, columnspan = 3)
         
     def split(self):
         self.last = self.img
@@ -300,6 +305,21 @@ class Application(tk.Frame):
             ratio = MIN_HEIGHT / self.img.size[1]
             self.img = self.img.resize(tuple(int(ratio*x) for x in self.img.size))
             #print(self.img.size)
+
+    def openFile(self):
+        fileName  = tk.filedialog.askopenfilename()
+        self.img = Image.open(fileName)
+        if(self.img.size > (MIN_WIDTH, MIN_HEIGHT)):
+            self.resize()            
+        self.pimg = ImageTk.PhotoImage(self.img)
+        self.last = self.img
+        self.updateImage()
+    
+    def saveFile(self):
+        fileName = tk.filedialog.asksaveasfilename()
+        self.img.save(fileName)
+
+
 
 def main(argv):
     if len(argv) == 0:
