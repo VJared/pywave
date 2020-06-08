@@ -9,7 +9,6 @@ import math
 import random
 import sys
 from PIL import ImageTk, Image, ImageDraw, ImageFont
-#TODO: add option to load new image
 #TODO: add slider for values
 MIN_WIDTH = 700
 MIN_HEIGHT = 700
@@ -17,7 +16,7 @@ MIN_HEIGHT = 700
 #Correlates with frequency of the wave function
 WAVE_CONST = 7
 #Wave amplitude
-WIGGLE = 5
+WIGGLE = -20
 
 #Where the slices should start
 S_OFFSET = -100
@@ -296,8 +295,7 @@ class Application(tk.Frame):
 
     #resize image to fit inside bounds, maintains aspect ratio
     def resize(self):
-        over = (self.img.size[0] / MIN_WIDTH, self.img.size[1] / MIN_HEIGHT)
-        if over[0] > over[1]:
+        if self.img.size[0] / MIN_WIDTH > self.img.size[1] / MIN_HEIGHT:
             ratio = MIN_WIDTH / self.img.size[0]
             self.img = self.img.resize(tuple(int(ratio*x) for x in self.img.size))
             #print(self.img.size)
@@ -327,7 +325,7 @@ def main(argv):
     if len(argv) == 0:
         img = Image.new("RGB", (500, 500), (255, 255, 255))
         d = ImageDraw.Draw(img)
-        d.text((200,230), "No image file provided\nUse arguments python ", fill=(0, 0, 0,255))
+        d.text((150,230), "No image file provided\nUse arguments python .\pywave.py <filename>", fill=(0, 0, 0,255))
         img.save("default.png")
         
         argv.append("default.png")
