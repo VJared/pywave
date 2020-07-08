@@ -14,18 +14,18 @@ MIN_WIDTH = 700
 MIN_HEIGHT = 700
 
 #Correlates with frequency of the wave function
-WAVE_CONST = 7
+WAVE_CONST = 4
 #Wave amplitude
-WIGGLE = -20
+WIGGLE = 7
 
 #Where the slices should start
-S_OFFSET = -100
+S_OFFSET = 0
 #How wide the sliced area be
-S_WIDTH = 100
+S_WIDTH = 110
 #How wide the slices are
-S_GAP = 20
+S_GAP = 16
 #How far the slices move
-S_INTENSITY = 20
+S_INTENSITY = 16
 #TODO: use this to keep slices in a "grid"
 S_RANDSTEP = 1
 
@@ -232,7 +232,22 @@ class Application(tk.Frame):
         self.stogB = tk.Button(self, text="STOG", command=self.stog)
         self.colorB = tk.Button(self, text="COLOR", command=self.color)
         self.randB = tk.Button(self, text="RANDOM", command=self.rand)
+
+        self.freqS = tk.Scale(self, from_=0, to=100)
+        self.ampS = tk.Scale(self, from_=-100, to=100)
         
+        self.offsetS    = tk.Scale(self, from_=-200, to=200)
+        self.areaS      = tk.Scale(self, from_=0, to=200)
+        self.widthS     = tk.Scale(self, from_=0, to=100)
+        self.intensityS = tk.Scale(self, from_=0, to=200)
+        
+        self.freqS.set(WAVE_CONST)
+        self.ampS.set(WIGGLE)
+        self.offsetS.set(S_OFFSET)
+        self.areaS.set(S_WIDTH)
+        self.widthS.set(S_GAP)
+        self.intensityS.set(S_INTENSITY)
+
         self.splitB.grid(row = 0, column = 0)
         self.unsplitB.grid(row = 0, column = 1)
         self.splotB.grid(row = 1, column = 0)
@@ -243,6 +258,14 @@ class Application(tk.Frame):
         self.waveB.grid(row = 3, column = 0)
         self.colorB.grid(row = 3, column = 1)
         self.randB.grid(row = 4, column = 0, columnspan=2)
+
+        self.freqS.grid(row = 0, column = 5)
+        self.ampS.grid(row = 0, column = 6)
+        self.offsetS.grid(row = 1, column = 5)
+        self.areaS.grid(row = 1, column = 6)
+        self.intensityS.grid(row = 2, column = 5)
+        self.widthS.grid(row = 2, column = 6)
+        
 
         self.panel = tk.Label(self, image = self.pimg)
         self.panel.grid(row = 0, column = 2, rowspan = 5, columnspan = 3)
@@ -265,14 +288,36 @@ class Application(tk.Frame):
         self.updateImage()
 
     def wave(self):
+        global WAVE_CONST
+        global WIGGLE
+        WAVE_CONST = self.freqS.get()
+        WIGGLE = self.ampS.get()
         self.last = self.img
         self.img = wave(self.img)
         self.updateImage()
     def stag(self):
+        global S_GAP
+        global S_WIDTH 
+        global S_INTENSITY
+        global S_OFFSET 
+        S_GAP = self.widthS.get()
+        S_WIDTH = self.areaS.get()
+        S_INTENSITY = self.intensityS.get()
+        S_OFFSET = self.offsetS.get()
+
         self.last = self.img
         self.img = stagger(self.img)
         self.updateImage()
     def stog(self):
+        global S_GAP
+        global S_WIDTH 
+        global S_INTENSITY
+        global S_OFFSET 
+        S_GAP = self.widthS.get()
+        S_WIDTH = self.areaS.get()
+        S_INTENSITY = self.intensityS.get()
+        S_OFFSET = self.offsetS.get()
+        
         self.last = self.img
         self.img = stogger(self.img)
         self.updateImage()
